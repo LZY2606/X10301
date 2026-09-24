@@ -1,0 +1,1322 @@
+{
+  "case_id": "page_split_archive_v1",
+  "title": "页裂档案：B-tree 页面布局、分裂传播与恢复检查",
+  "page_size_bytes": 64,
+  "coordinate_basis": {
+    "byte_offset": "0-based offset from page start",
+    "slot_index": "0-based key order within slot directory",
+    "lsn": "global monotonic log sequence number",
+    "page_id": "allocator-issued, never reused within the story"
+  },
+  "initial_rule_version": {
+    "rule_version_id": "rV1",
+    "duplicate_policy": "append",
+    "split_tie": "left",
+    "separator_rule": {
+      "leaf": "copy_rightmost_min_key_to_parent",
+      "internal": "promote_middle_key_to_parent"
+    }
+  },
+  "parameter_revision": {
+    "rule_version_id": "rV2",
+    "changes": {
+      "split_tie": "right"
+    },
+    "rationale": "参数修订：tie-break 从偏左改为偏右，只重算依赖该参数的判定。"
+  },
+  "local_source_change": {
+    "material_id": "m001",
+    "field": "value",
+    "from": {
+      "hex": "7676767676767676",
+      "length_bytes": 8,
+      "unit": "byte"
+    },
+    "to": {
+      "hex": "7676767676767676",
+      "length_bytes": 8,
+      "unit": "byte",
+      "annotation": "re-imported annotation only; bytes unchanged",
+      "source_edit_ref": "src-change-1"
+    },
+    "rationale": "只影响局部依赖：仅 m001 的解释与其下游视图失效，其余身份不变。"
+  },
+  "materials": [
+    {
+      "id": "m001",
+      "op": "insert",
+      "key_hex": "6b303038",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m002",
+      "op": "insert",
+      "key_hex": "6b303036",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m003",
+      "op": "insert",
+      "key_hex": "6b303639",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m004",
+      "op": "insert",
+      "key_hex": "6b303733",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m005",
+      "op": "insert",
+      "key_hex": "6b303234",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m006",
+      "op": "insert",
+      "key_hex": "6b303532",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m007",
+      "op": "insert",
+      "key_hex": "6b303334",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m008",
+      "op": "insert",
+      "key_hex": "6b303435",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m009",
+      "op": "insert",
+      "key_hex": "6b303436",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m010",
+      "op": "insert",
+      "key_hex": "6b303437",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m011",
+      "op": "insert",
+      "key_hex": "6b303439",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m012",
+      "op": "insert",
+      "key_hex": "6b303533",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m013",
+      "op": "insert",
+      "key_hex": "6b303032",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m014",
+      "op": "insert",
+      "key_hex": "6b303637",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m015",
+      "op": "insert",
+      "key_hex": "6b303235",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m016",
+      "op": "insert",
+      "key_hex": "6b303033",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m017",
+      "op": "insert",
+      "key_hex": "6b303730",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m018",
+      "op": "insert",
+      "key_hex": "6b303630",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m019",
+      "op": "insert",
+      "key_hex": "6b303139",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m020",
+      "op": "insert",
+      "key_hex": "6b303232",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m021",
+      "op": "insert",
+      "key_hex": "6b303731",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m022",
+      "op": "insert",
+      "key_hex": "6b303431",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m023",
+      "op": "insert",
+      "key_hex": "6b303137",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m024",
+      "op": "insert",
+      "key_hex": "6b303538",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m025",
+      "op": "insert",
+      "key_hex": "6b303233",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m026",
+      "op": "insert",
+      "key_hex": "6b303631",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m027",
+      "op": "insert",
+      "key_hex": "6b303735",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m028",
+      "op": "insert",
+      "key_hex": "6b303430",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m029",
+      "op": "insert",
+      "key_hex": "6b303133",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m030",
+      "op": "insert",
+      "key_hex": "6b303739",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S1 regular inserts",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m031",
+      "op": "insert",
+      "key_hex": "6b303231",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m032",
+      "op": "insert",
+      "key_hex": "6b303131",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m033",
+      "op": "insert",
+      "key_hex": "6b303335",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m034",
+      "op": "insert",
+      "key_hex": "6b303039",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m035",
+      "op": "insert",
+      "key_hex": "6b303536",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m036",
+      "op": "insert",
+      "key_hex": "6b303138",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m037",
+      "op": "insert",
+      "key_hex": "6b303035",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m038",
+      "op": "insert",
+      "key_hex": "6b303034",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m039",
+      "op": "insert",
+      "key_hex": "6b303634",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m040",
+      "op": "insert",
+      "key_hex": "6b303238",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m041",
+      "op": "insert",
+      "key_hex": "6b303331",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m042",
+      "op": "insert",
+      "key_hex": "6b303237",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m043",
+      "op": "insert",
+      "key_hex": "6b303539",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m044",
+      "op": "insert",
+      "key_hex": "6b303537",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m045",
+      "op": "insert",
+      "key_hex": "6b303534",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m046",
+      "op": "insert",
+      "key_hex": "6b303230",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m047",
+      "op": "insert",
+      "key_hex": "6b303236",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m048",
+      "op": "insert",
+      "key_hex": "6b303336",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m049",
+      "op": "insert",
+      "key_hex": "6b303438",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m050",
+      "op": "insert",
+      "key_hex": "6b303738",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m051",
+      "op": "insert",
+      "key_hex": "6b303332",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m052",
+      "op": "insert",
+      "key_hex": "6b303132",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m053",
+      "op": "insert",
+      "key_hex": "6b303037",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m054",
+      "op": "insert",
+      "key_hex": "6b303030",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m055",
+      "op": "insert",
+      "key_hex": "6b303531",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m056",
+      "op": "insert",
+      "key_hex": "6b303737",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m057",
+      "op": "insert",
+      "key_hex": "6b303239",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m058",
+      "op": "insert",
+      "key_hex": "6b303134",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m059",
+      "op": "insert",
+      "key_hex": "6b303434",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m060",
+      "op": "insert",
+      "key_hex": "6b303633",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m061",
+      "op": "insert",
+      "key_hex": "6b303338",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m062",
+      "op": "insert",
+      "key_hex": "6b303339",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m063",
+      "op": "insert",
+      "key_hex": "6b303736",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m064",
+      "op": "insert",
+      "key_hex": "6b303433",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m065",
+      "op": "insert",
+      "key_hex": "6b303638",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m066",
+      "op": "insert",
+      "key_hex": "6b303337",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m067",
+      "op": "insert",
+      "key_hex": "6b303031",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m068",
+      "op": "insert",
+      "key_hex": "6b303333",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m069",
+      "op": "insert",
+      "key_hex": "6b303636",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m070",
+      "op": "insert",
+      "key_hex": "6b303130",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m071",
+      "op": "insert",
+      "key_hex": "6b303530",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m072",
+      "op": "insert",
+      "key_hex": "6b303632",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m073",
+      "op": "insert",
+      "key_hex": "6b303734",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m074",
+      "op": "insert",
+      "key_hex": "6b303330",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m075",
+      "op": "insert",
+      "key_hex": "6b303732",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m076",
+      "op": "insert",
+      "key_hex": "6b303535",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m077",
+      "op": "insert",
+      "key_hex": "6b303135",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m078",
+      "op": "insert",
+      "key_hex": "6b303635",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m079",
+      "op": "insert",
+      "key_hex": "6b303136",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m080",
+      "op": "insert",
+      "key_hex": "6b303432",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S2 cascade build-up",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m081",
+      "op": "insert",
+      "key_hex": "4c61616161616161616161616161616161616161616161616161616161616161",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S3 variable-length key: 32 bytes dominate split by bytes",
+      "value": {
+        "hex": "7878787878787878",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m082",
+      "op": "insert",
+      "key_hex": "4d626262626262626262626262626262626262626262626262626262626262",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S3 variable-length key: 31 bytes",
+      "value": {
+        "hex": "7979797979797979",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m083",
+      "op": "insert",
+      "key_hex": "6b303038",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S4 duplicate key, duplicate_policy=append",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m084",
+      "op": "insert",
+      "key_hex": "6b303038",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S4 duplicate key again, append version suffix",
+      "value": {
+        "hex": "7676767676767676",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m085",
+      "op": "delete",
+      "key_hex": "6b303038",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m086",
+      "op": "delete",
+      "key_hex": "6b303036",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m087",
+      "op": "delete",
+      "key_hex": "6b303639",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m088",
+      "op": "delete",
+      "key_hex": "6b303733",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m089",
+      "op": "delete",
+      "key_hex": "6b303234",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m090",
+      "op": "delete",
+      "key_hex": "6b303532",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m091",
+      "op": "delete",
+      "key_hex": "6b303334",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m092",
+      "op": "delete",
+      "key_hex": "6b303435",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m093",
+      "op": "delete",
+      "key_hex": "6b303436",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m094",
+      "op": "delete",
+      "key_hex": "6b303437",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m095",
+      "op": "delete",
+      "key_hex": "6b303439",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m096",
+      "op": "delete",
+      "key_hex": "6b303533",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S5 delete to empty a leaf"
+    },
+    {
+      "id": "m097",
+      "op": "insert",
+      "key_hex": "5a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S6 torn page during split; recover twice (idempotent)",
+      "value": {
+        "hex": "7a7a7a7a7a7a7a7a",
+        "length_bytes": 8,
+        "unit": "byte"
+      },
+      "crash": "torn_split"
+    },
+    {
+      "id": "m098",
+      "op": "insert",
+      "key_hex": "5a79797979797979797979",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S6 post-recovery insert must succeed",
+      "value": {
+        "hex": "7a7a7a7a7a7a7a7a",
+        "length_bytes": 8,
+        "unit": "byte"
+      }
+    },
+    {
+      "id": "m099",
+      "op": "insert",
+      "key_hex": "51717171717171717171717171",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte",
+      "stage_note": "S7 crash before commit; loser txn undone; recover twice",
+      "value": {
+        "hex": "7171717171717171",
+        "length_bytes": 8,
+        "unit": "byte"
+      },
+      "crash": "commit_flush"
+    },
+    {
+      "id": "m100",
+      "op": "insert",
+      "key_hex": "424144",
+      "value": {
+        "hex": "616263",
+        "length_bytes": 99,
+        "unit": "byte"
+      },
+      "stage_note": "S8 unconvertible: declared 99 bytes != 3 bytes; kept in place",
+      "coordinate_basis": "byte offset within fixed page",
+      "key_unit": "byte"
+    }
+  ],
+  "invariant_judgments": [
+    {
+      "judgment_id": "J1",
+      "rule": "split_decided_by_byte_space_not_key_count"
+    },
+    {
+      "judgment_id": "J2",
+      "rule": "separator_copy_for_leaf_promote_for_internal_consistent"
+    },
+    {
+      "judgment_id": "J3",
+      "rule": "no_reachable_half_page_after_crash_point"
+    },
+    {
+      "judgment_id": "J4",
+      "rule": "recovery_replay_twice_idempotent"
+    },
+    {
+      "judgment_id": "J5",
+      "rule": "sibling_chain_covers_all_reachable_leaves"
+    },
+    {
+      "judgment_id": "J6",
+      "rule": "page_ids_monotonic_no_reuse"
+    },
+    {
+      "judgment_id": "J7",
+      "rule": "unconvertible_values_remain_in_place_with_diagnostic"
+    },
+    {
+      "judgment_id": "J8",
+      "rule": "lsn_monotonic_and_wal_before_pages"
+    }
+  ]
+}
