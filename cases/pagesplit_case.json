@@ -1,0 +1,171 @@
+{
+  "format": "page-split-case/v1",
+  "case_id": "case-pagesplit-001",
+  "title": "页裂档案：B-tree 页面布局、分裂传播与恢复检查",
+  "domain": "storage-engine-btree-page-split",
+  "coordinate_basis": {
+    "page_origin": "zero-based byte offset from first header byte",
+    "key_encoding": "utf-8 bytes (unless raw_encoding overrides)",
+    "lsn_origin": 1,
+    "page_id_origin": 1
+  },
+  "params": {
+    "page_size": {"value": 256, "unit": "byte"},
+    "header_size": {"value": 28, "unit": "byte"},
+    "slot_size": {"value": 4, "unit": "byte"},
+    "key_unit": {"value": 1, "unit": "byte"},
+    "duplicate_policy": "overwrite",
+    "separator_rule": "copy"
+  },
+  "raw_fragments": [
+    {
+      "fragment_id": "raw-key-hex-7e",
+      "description": "从生产镜像直接转储的原始键，声明编码 x-unknown-codec，无法规范化",
+      "encoding": "x-unknown-codec",
+      "raw_hex": "ff00fe9a7e",
+      "diagnostic": "unconvertible-value-kept-raw:no-normalizer-for-x-unknown-codec"
+    }
+  ],
+  "baseline_operations": [
+    {"op": "insert", "key": "a!alpha-pad", "value": "v-1"},
+    {"op": "insert", "key": "b!bravo-pad-xxxxxxxxxxxxxxxx", "value": "v-2"},
+    {"op": "insert", "key": "c!charlie-variable-key-length", "value": "v-3"},
+    {"op": "insert", "key": "d!delta-xxxxxxxxxxxxxxxxxxxxxxxxxx", "value": "v-4"},
+    {"op": "insert", "key": "e!echo-yyyyyyyyyyyyyyyyyyyyyyyyyyy", "value": "v-5"},
+    {"op": "insert", "key": "f!foxtrot-zzzzzzzzzzzzzzzzzzzzzzzz", "value": "v-6"},
+    {"op": "insert", "key": "g!golf-short", "value": "v-7"},
+    {"op": "insert", "key": "h!hotel-mmmmmmmmmmmmmmmmmmmmmmmmm", "value": "v-8"},
+    {"op": "insert", "key": "i!india-nnnnnnnnnnnnnnnnnnnnnnnnnn", "value": "v-9"},
+    {"op": "insert", "key": "j!juliett-ppppppppppppppppppppppppp", "value": "v-10"},
+    {"op": "insert", "key": "k!kilo-qqqqqqqqqqqqqqqqqqqqqqqqqq", "value": "v-11"},
+    {"op": "insert", "key": "l!lima-rrrrrrrrrrrrrrrrrrrrrrrrrr", "value": "v-12"},
+    {"op": "insert", "key": "m!mike-ssssssssssssssssssssssssss", "value": "v-13"},
+    {"op": "insert", "key": "n!november-tttttttttttttttttttttttt", "value": "v-14"},
+    {"op": "insert", "key": "o!oscar-uuuuuuuuuuuuuuuuuuuuuuuuu", "value": "v-15"},
+    {"op": "insert", "key": "p!poppa-vvvvvvvvvvvvvvvvvvvvvvvvv", "value": "v-16"},
+    {"op": "insert", "key": "q!quebec-wwwwwwwwwwwwwwwwwwwwwwww", "value": "v-17"},
+    {"op": "insert", "key": "r!romeo-xxxxxxxxxxxxxxxxxxxxxxxxx", "value": "v-18"},
+    {"op": "insert", "key": "a!alpha-pad", "value": "v-1-duplicate", "comment": "duplicate key policy probe"},
+    {"op": "delete", "key": "g!golf-short", "comment": "empties one leaf together with the next delete"},
+    {"op": "delete", "key": "h!hotel-mmmmmmmmmmmmmmmmmmmmmmmmm"},
+    {"op": "checkpoint", "comment": "commit dirty pages before the crash event"},
+    {"op": "insert", "key": "s!sierra-postcheckpoint-key", "value": "v-19", "comment": "dirty pages after checkpoint"},
+    {"op": "crash", "torn_target": "root", "written_bytes": {"value": 60, "unit": "byte"},
+     "comment": "interrupted page write: 60 of 256 bytes reach disk"},
+    {"op": "recover", "comment": "first redo replay"},
+    {"op": "recover", "comment": "second replay: must apply nothing"}
+  ],
+  "counterexamples": [
+    {
+      "code": "CE-01-variable-keys",
+      "title": "变长键：分裂由字节空间而不是键数决定",
+      "varies": "direct-source: key byte length",
+      "operations": [
+        {"op": "insert", "key": "a-short", "value": "v"},
+        {"op": "insert", "key": "b-short", "value": "v"},
+        {"op": "insert", "key": "c-this-one-is-deliberately-very-long-xxxxxxxxxxxxxxxxxxxxxxxxxx", "value": "v"}
+      ],
+      "expect": {"rule_id": "R1-byte-space-split", "status": "pass"},
+      "note": "三键即分裂；若按键数阈值则不会在此分裂"
+    },
+    {
+      "code": "CE-02-root-split",
+      "title": "根分裂：新根分配新 page id，高度增加",
+      "varies": "direct-source: insert pressure on single root leaf",
+      "operations": [
+        {"op": "insert", "key": "root-1-aaaaaaaaaaaaaaaaaaaaaaaaaaaa", "value": "v"},
+        {"op": "insert", "key": "root-2-bbbbbbbbbbbbbbbbbbbbbbbbbbbb", "value": "v"},
+        {"op": "insert", "key": "root-3-cccccccccccccccccccccccccccc", "value": "v"}
+      ],
+      "expect": {"rule_id": "R2-separator-consistency", "status": "pass"},
+      "require_trace": "root"
+    },
+    {
+      "code": "CE-03-cascade-split",
+      "title": "级联分裂：内部页满后向根传播",
+      "varies": "direct-source: sustained ordered inserts",
+      "operations": [
+        {"op": "insert_bulk", "prefix": "cas-", "count": 40, "key_pad_bytes": 24, "value_bytes": 4}
+      ],
+      "expect": {"rule_id": "R5-sibling-chain-order", "status": "pass"},
+      "require_trace": "internal"
+    },
+    {
+      "code": "CE-04-duplicate-policy",
+      "title": "重复键策略：reject/overwrite/append 只改一个直接来源",
+      "varies": "direct-source: duplicate_policy parameter",
+      "operations": [
+        {"op": "insert", "key": "dup-key", "value": "first"},
+        {"op": "insert", "key": "dup-key", "value": "second"}
+      ],
+      "candidates": [
+        {"code": "DUP-reject", "params": {"duplicate_policy": "reject"}},
+        {"code": "DUP-overwrite", "params": {"duplicate_policy": "overwrite"}},
+        {"code": "DUP-append", "params": {"duplicate_policy": "append"}}
+      ],
+      "expect": {"rule_id": "R5-sibling-chain-order", "status": "pass"}
+    },
+    {
+      "code": "CE-05-empty-after-delete",
+      "title": "删除后空页：sibling link 摘除、page id 不复用",
+      "varies": "direct-source: delete sequence",
+      "operations": [
+        {"op": "insert_bulk", "prefix": "emp-", "count": 8, "key_pad_bytes": 30, "value_bytes": 2},
+        {"op": "delete", "key": "emp-0001"},
+        {"op": "delete", "key": "emp-0002"},
+        {"op": "delete", "key": "emp-0003"},
+        {"op": "insert_bulk", "prefix": "emp-new-", "count": 3, "key_pad_bytes": 30, "value_bytes": 2}
+      ],
+      "expect": {"rule_id": "R7-page-id-monotonic", "status": "pass"},
+      "candidates": [
+        {"code": "EMPTY-retain-tombstone", "note": "保留空页，page id 不复用"},
+        {"code": "EMPTY-reclaim-id", "note": "回收 page id（与 R7 冲突，预期被否）",
+         "incompatible_rules": ["R7-page-id-monotonic"]}
+      ]
+    },
+    {
+      "code": "CE-06-torn-write",
+      "title": "写页中断：崩溃点不得留下可达半页",
+      "varies": "direct-source: crash event with partial byte write",
+      "operations": [
+        {"op": "insert_bulk", "prefix": "torn-", "count": 12, "key_pad_bytes": 26, "value_bytes": 4},
+        {"op": "checkpoint"},
+        {"op": "insert", "key": "torn-dirty-after-checkpoint", "value": "v13"},
+        {"op": "crash", "torn_target": "root",
+         "written_bytes": {"value": 64, "unit": "byte"}},
+        {"op": "inspect", "expect_torn": true},
+        {"op": "recover"},
+        {"op": "inspect", "expect_torn": false}
+      ],
+      "expect": {"rule_id": "R3-no-reachable-half-page", "status": "pass"}
+    },
+    {
+      "code": "CE-07-replay-twice",
+      "title": "恢复重放两次：第二次应用空记录且镜像一致",
+      "varies": "direct-source: duplicate recover invocation",
+      "operations": [
+        {"op": "insert_bulk", "prefix": "rep-", "count": 10, "key_pad_bytes": 26, "value_bytes": 4},
+        {"op": "checkpoint"},
+        {"op": "insert", "key": "rep-dirty", "value": "v11"},
+        {"op": "crash", "torn_target": "leftmost-leaf",
+         "written_bytes": {"value": 20, "unit": "byte"}},
+        {"op": "recover"},
+        {"op": "recover"}
+      ],
+      "expect": {"rule_id": "R4-replay-idempotent", "status": "pass"}
+    }
+  ],
+  "review_path": [
+    "tree-structure",
+    "page-byte-layout",
+    "split-propagation",
+    "log-records",
+    "reachable-pages-at-crash-point"
+  ],
+  "narrative": [
+    "阶段一 初始导入：存储引擎小组按固定页大小导入键值操作与崩溃事件，审阅者核对逻辑操作、页前镜像、slot directory、free space、sibling link、page id 分配与 LSN 全部保留。",
+    "阶段二 边界组合：依次触发变长键、根分裂、级联分裂、重复键策略、删除后空页、写页中断、恢复重放两次，系统保留输入片段、判定状态与受影响对象。",
+    "阶段三 第二分支：专门检验字节空间分裂、separator 复制/提升一致性、崩溃点无可达半页、重放幂等，并保留无法唯一决定时的全部合法候选。",
+    "阶段四 最终复核：通过树结构、页内字节布局、分裂传播、日志记录、崩溃点可达页面五条可见路径完成接受/否定/参数调整；回到旧事件恢复当时依赖版本与结论。"
+  ]
+}
