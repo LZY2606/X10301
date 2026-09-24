@@ -1,0 +1,952 @@
+{
+ "case_id": "page-split-archive",
+ "title": "页裂档案：B-tree 页面布局、分裂传播与恢复检查",
+ "page_size": {
+  "value": 128,
+  "unit": "byte"
+ },
+ "params": {
+  "page_size": 128,
+  "split_basis": "bytes",
+  "separator_leaf": "copy",
+  "separator_internal": "promote",
+  "duplicate_policy": "allow_right",
+  "empty_leaf_policy": "unlink"
+ },
+ "ops": [
+  {
+   "op": "insert",
+   "key": "k001",
+   "value": "v001"
+  },
+  {
+   "op": "insert",
+   "key": "k002",
+   "value": "v002"
+  },
+  {
+   "op": "insert",
+   "key": "k003",
+   "value": "v003"
+  },
+  {
+   "op": "insert",
+   "key": "k004",
+   "value": "v004"
+  },
+  {
+   "op": "insert",
+   "key": "k005",
+   "value": "v005"
+  },
+  {
+   "op": "insert",
+   "key": "k006",
+   "value": "v006"
+  },
+  {
+   "op": "insert",
+   "key": "k007",
+   "value": "v007"
+  },
+  {
+   "op": "insert",
+   "key": "k008",
+   "value": "v008"
+  },
+  {
+   "op": "insert",
+   "key": "k009",
+   "value": "v009"
+  },
+  {
+   "op": "insert",
+   "key": "k010",
+   "value": "v010"
+  },
+  {
+   "op": "insert",
+   "key": "k011",
+   "value": "v011"
+  },
+  {
+   "op": "insert",
+   "key": "k012",
+   "value": "v012"
+  },
+  {
+   "op": "insert",
+   "key": "k013",
+   "value": "v013"
+  },
+  {
+   "op": "insert",
+   "key": "k014",
+   "value": "v014"
+  },
+  {
+   "op": "insert",
+   "key": "k015",
+   "value": "v015"
+  },
+  {
+   "op": "insert",
+   "key": "k016",
+   "value": "v016"
+  },
+  {
+   "op": "insert",
+   "key": "k017",
+   "value": "v017"
+  },
+  {
+   "op": "insert",
+   "key": "k018",
+   "value": "v018"
+  },
+  {
+   "op": "insert",
+   "key": "k019",
+   "value": "v019"
+  },
+  {
+   "op": "insert",
+   "key": "k020",
+   "value": "v020"
+  },
+  {
+   "op": "insert",
+   "key": "k021",
+   "value": "v021"
+  },
+  {
+   "op": "insert",
+   "key": "k022",
+   "value": "v022"
+  },
+  {
+   "op": "insert",
+   "key": "k023",
+   "value": "v023"
+  },
+  {
+   "op": "insert",
+   "key": "k024",
+   "value": "v024"
+  },
+  {
+   "op": "insert",
+   "key": "k025",
+   "value": "v025"
+  },
+  {
+   "op": "insert",
+   "key": "k026",
+   "value": "v026"
+  },
+  {
+   "op": "insert",
+   "key": "k027",
+   "value": "v027"
+  },
+  {
+   "op": "insert",
+   "key": "k028",
+   "value": "v028"
+  },
+  {
+   "op": "insert",
+   "key": "k029",
+   "value": "v029"
+  },
+  {
+   "op": "insert",
+   "key": "k030",
+   "value": "v030"
+  },
+  {
+   "op": "insert",
+   "key": "k031",
+   "value": "v031"
+  },
+  {
+   "op": "insert",
+   "key": "k032",
+   "value": "v032"
+  },
+  {
+   "op": "insert",
+   "key": "k033",
+   "value": "v033"
+  },
+  {
+   "op": "insert",
+   "key": "k034",
+   "value": "v034"
+  },
+  {
+   "op": "insert",
+   "key": "k035",
+   "value": "v035"
+  },
+  {
+   "op": "insert",
+   "key": "k036",
+   "value": "v036"
+  },
+  {
+   "op": "insert",
+   "key": "k037",
+   "value": "v037"
+  },
+  {
+   "op": "insert",
+   "key": "k038",
+   "value": "v038"
+  },
+  {
+   "op": "insert",
+   "key": "k039",
+   "value": "v039"
+  },
+  {
+   "op": "insert",
+   "key": "k040",
+   "value": "v040"
+  },
+  {
+   "op": "insert",
+   "key": "k041",
+   "value": "v041"
+  },
+  {
+   "op": "insert",
+   "key": "k042",
+   "value": "v042"
+  },
+  {
+   "op": "insert",
+   "key": "k043",
+   "value": "v043"
+  },
+  {
+   "op": "insert",
+   "key": "k044",
+   "value": "v044"
+  },
+  {
+   "op": "insert",
+   "key": "k045",
+   "value": "v045"
+  },
+  {
+   "op": "insert",
+   "key": "k046",
+   "value": "v046"
+  },
+  {
+   "op": "insert",
+   "key": "k047",
+   "value": "v047"
+  },
+  {
+   "op": "insert",
+   "key": "k048",
+   "value": "v048"
+  },
+  {
+   "op": "insert",
+   "key": "k049",
+   "value": "v049"
+  },
+  {
+   "op": "insert",
+   "key": "k050",
+   "value": "v050"
+  },
+  {
+   "op": "insert",
+   "key": "k051",
+   "value": "v051"
+  },
+  {
+   "op": "insert",
+   "key": "k052",
+   "value": "v052"
+  },
+  {
+   "op": "insert",
+   "key": "k053",
+   "value": "v053"
+  },
+  {
+   "op": "insert",
+   "key": "k054",
+   "value": "v054"
+  },
+  {
+   "op": "insert",
+   "key": "k055",
+   "value": "v055"
+  },
+  {
+   "op": "insert",
+   "key": "k056",
+   "value": "v056"
+  },
+  {
+   "op": "insert",
+   "key": "k057",
+   "value": "v057"
+  },
+  {
+   "op": "insert",
+   "key": "k058",
+   "value": "v058"
+  },
+  {
+   "op": "insert",
+   "key": "k059",
+   "value": "v059"
+  },
+  {
+   "op": "insert",
+   "key": "k060",
+   "value": "v060"
+  },
+  {
+   "op": "insert",
+   "key": "k061",
+   "value": "v061"
+  },
+  {
+   "op": "insert",
+   "key": "k062",
+   "value": "v062"
+  },
+  {
+   "op": "insert",
+   "key": "k063",
+   "value": "v063"
+  },
+  {
+   "op": "insert",
+   "key": "k064",
+   "value": "v064"
+  },
+  {
+   "op": "insert",
+   "key": "k065",
+   "value": "v065"
+  },
+  {
+   "op": "insert",
+   "key": "k066",
+   "value": "v066"
+  },
+  {
+   "op": "insert",
+   "key": "k067",
+   "value": "v067"
+  },
+  {
+   "op": "insert",
+   "key": "k068",
+   "value": "v068"
+  },
+  {
+   "op": "insert",
+   "key": "k069",
+   "value": "v069"
+  },
+  {
+   "op": "insert",
+   "key": "k070",
+   "value": "v070"
+  },
+  {
+   "op": "insert",
+   "key": "k071",
+   "value": "v071"
+  },
+  {
+   "op": "insert",
+   "key": "k072",
+   "value": "v072"
+  },
+  {
+   "op": "insert",
+   "key": "k073",
+   "value": "v073"
+  },
+  {
+   "op": "insert",
+   "key": "k074",
+   "value": "v074"
+  },
+  {
+   "op": "insert",
+   "key": "k075",
+   "value": "v075"
+  },
+  {
+   "op": "insert",
+   "key": "k076",
+   "value": "v076"
+  },
+  {
+   "op": "insert",
+   "key": "k077",
+   "value": "v077"
+  },
+  {
+   "op": "insert",
+   "key": "k078",
+   "value": "v078"
+  },
+  {
+   "op": "insert",
+   "key": "k079",
+   "value": "v079"
+  },
+  {
+   "op": "insert",
+   "key": "k080",
+   "value": "v080"
+  },
+  {
+   "op": "insert",
+   "key": "k081",
+   "value": "v081"
+  },
+  {
+   "op": "insert",
+   "key": "k082",
+   "value": "v082"
+  },
+  {
+   "op": "insert",
+   "key": "k083",
+   "value": "v083"
+  },
+  {
+   "op": "insert",
+   "key": "k084",
+   "value": "v084"
+  },
+  {
+   "op": "insert",
+   "key": "k085",
+   "value": "v085"
+  },
+  {
+   "op": "insert",
+   "key": "k086",
+   "value": "v086"
+  },
+  {
+   "op": "insert",
+   "key": "k087",
+   "value": "v087"
+  },
+  {
+   "op": "insert",
+   "key": "k088",
+   "value": "v088"
+  },
+  {
+   "op": "insert",
+   "key": "k089",
+   "value": "v089"
+  },
+  {
+   "op": "insert",
+   "key": "k090",
+   "value": "v090"
+  },
+  {
+   "op": "insert",
+   "key": "k091",
+   "value": "v091"
+  },
+  {
+   "op": "insert",
+   "key": "k092",
+   "value": "v092"
+  },
+  {
+   "op": "insert",
+   "key": "k093",
+   "value": "v093"
+  },
+  {
+   "op": "insert",
+   "key": "k094",
+   "value": "v094"
+  },
+  {
+   "op": "insert",
+   "key": "k095",
+   "value": "v095"
+  },
+  {
+   "op": "insert",
+   "key": "k096",
+   "value": "v096"
+  },
+  {
+   "op": "insert",
+   "key": "k097",
+   "value": "v097"
+  },
+  {
+   "op": "insert",
+   "key": "k098",
+   "value": "v098"
+  },
+  {
+   "op": "insert",
+   "key": "k099",
+   "value": "v099"
+  },
+  {
+   "op": "insert",
+   "key": "k100",
+   "value": "v100"
+  },
+  {
+   "op": "insert",
+   "key": "k101",
+   "value": "v101"
+  },
+  {
+   "op": "insert",
+   "key": "k102",
+   "value": "v102"
+  },
+  {
+   "op": "insert",
+   "key": "k103",
+   "value": "v103"
+  },
+  {
+   "op": "insert",
+   "key": "k104",
+   "value": "v104"
+  },
+  {
+   "op": "insert",
+   "key": "k105",
+   "value": "v105"
+  },
+  {
+   "op": "insert",
+   "key": "k106",
+   "value": "v106"
+  },
+  {
+   "op": "insert",
+   "key": "k107",
+   "value": "v107"
+  },
+  {
+   "op": "insert",
+   "key": "k108",
+   "value": "v108"
+  },
+  {
+   "op": "insert",
+   "key": "k109",
+   "value": "v109"
+  },
+  {
+   "op": "insert",
+   "key": "k110",
+   "value": "v110"
+  },
+  {
+   "op": "insert",
+   "key": "k111",
+   "value": "v111"
+  },
+  {
+   "op": "insert",
+   "key": "k112",
+   "value": "v112"
+  },
+  {
+   "op": "insert",
+   "key": "k113",
+   "value": "v113"
+  },
+  {
+   "op": "insert",
+   "key": "k114",
+   "value": "v114"
+  },
+  {
+   "op": "insert",
+   "key": "k115",
+   "value": "v115"
+  },
+  {
+   "op": "insert",
+   "key": "k116",
+   "value": "v116"
+  },
+  {
+   "op": "insert",
+   "key": "k117",
+   "value": "v117"
+  },
+  {
+   "op": "insert",
+   "key": "k118",
+   "value": "v118"
+  },
+  {
+   "op": "insert",
+   "key": "k119",
+   "value": "v119"
+  },
+  {
+   "op": "insert",
+   "key": "k120",
+   "value": "v120"
+  },
+  {
+   "op": "insert",
+   "key": "k121",
+   "value": "v121"
+  },
+  {
+   "op": "insert",
+   "key": "k122",
+   "value": "v122"
+  },
+  {
+   "op": "insert",
+   "key": "k123",
+   "value": "v123"
+  },
+  {
+   "op": "insert",
+   "key": "k124",
+   "value": "v124"
+  },
+  {
+   "op": "insert",
+   "key": "k125",
+   "value": "v125"
+  },
+  {
+   "op": "insert",
+   "key": "k126",
+   "value": "v126"
+  },
+  {
+   "op": "insert",
+   "key": "k127",
+   "value": "v127"
+  },
+  {
+   "op": "insert",
+   "key": "k128",
+   "value": "v128"
+  },
+  {
+   "op": "insert",
+   "key": "k129",
+   "value": "v129"
+  },
+  {
+   "op": "insert",
+   "key": "k130",
+   "value": "v130"
+  },
+  {
+   "op": "insert",
+   "key": "k131",
+   "value": "v131"
+  },
+  {
+   "op": "insert",
+   "key": "k132",
+   "value": "v132"
+  },
+  {
+   "op": "insert",
+   "key": "k133",
+   "value": "v133"
+  },
+  {
+   "op": "insert",
+   "key": "k134",
+   "value": "v134"
+  },
+  {
+   "op": "insert",
+   "key": "k135",
+   "value": "v135"
+  },
+  {
+   "op": "insert",
+   "key": "k136",
+   "value": "v136"
+  },
+  {
+   "op": "insert",
+   "key": "k137",
+   "value": "v137"
+  },
+  {
+   "op": "insert",
+   "key": "k138",
+   "value": "v138"
+  },
+  {
+   "op": "insert",
+   "key": "k139",
+   "value": "v139"
+  },
+  {
+   "op": "insert",
+   "key": "k140",
+   "value": "v140"
+  },
+  {
+   "op": "insert",
+   "key": "k141",
+   "value": "v141"
+  },
+  {
+   "op": "insert",
+   "key": "k142",
+   "value": "v142"
+  },
+  {
+   "op": "insert",
+   "key": "k143",
+   "value": "v143"
+  },
+  {
+   "op": "insert",
+   "key": "k144",
+   "value": "v144"
+  },
+  {
+   "op": "insert",
+   "key": "k145",
+   "value": "v145"
+  },
+  {
+   "op": "insert",
+   "key": "k146",
+   "value": "v146"
+  },
+  {
+   "op": "insert",
+   "key": "k147",
+   "value": "v147"
+  },
+  {
+   "op": "insert",
+   "key": "k148",
+   "value": "v148"
+  },
+  {
+   "op": "insert",
+   "key": "k149",
+   "value": "v149"
+  },
+  {
+   "op": "insert",
+   "key": "k150",
+   "value": "v150"
+  },
+  {
+   "op": "insert",
+   "key": "k151",
+   "value": "v151"
+  },
+  {
+   "op": "insert",
+   "key": "k152",
+   "value": "v152"
+  },
+  {
+   "op": "insert",
+   "key": "k153",
+   "value": "v153"
+  },
+  {
+   "op": "insert",
+   "key": "k154",
+   "value": "v154"
+  },
+  {
+   "op": "insert",
+   "key": "k155",
+   "value": "v155"
+  },
+  {
+   "op": "insert",
+   "key": "k156",
+   "value": "v156"
+  },
+  {
+   "op": "insert",
+   "key": "k157",
+   "value": "v157"
+  },
+  {
+   "op": "insert",
+   "key": "k158",
+   "value": "v158"
+  },
+  {
+   "op": "insert",
+   "key": "k159",
+   "value": "v159"
+  },
+  {
+   "op": "insert",
+   "key": "k160",
+   "value": "v160"
+  },
+  {
+   "op": "insert",
+   "key": "k007",
+   "value": "dup"
+  },
+  {
+   "op": "insert",
+   "key": "a-long-variable-length-key-0001",
+   "value": "vv"
+  },
+  {
+   "op": "insert",
+   "key": "zz-a",
+   "value": "1"
+  },
+  {
+   "op": "insert",
+   "key": "zz-b",
+   "value": "2"
+  },
+  {
+   "op": "delete_leaf_keys",
+   "anchor": "k040"
+  },
+  {
+   "op": "crash"
+  },
+  {
+   "op": "recover",
+   "times": 2
+  }
+ ],
+ "expect_scenarios": [
+  "variable_length_key",
+  "leaf_split",
+  "root_split",
+  "cascading_split",
+  "duplicate_key",
+  "delete_empty_page",
+  "torn_write",
+  "recovery_replay"
+ ],
+ "annotations": [
+  {
+   "field": "free_space_estimate",
+   "value": 3,
+   "unit": "hand_count",
+   "note": "legacy probe; no byte conversion rule; must stay raw with diagnostic"
+  }
+ ],
+ "param_revision": {
+  "version_id": "rules-v2",
+  "changes": {
+   "duplicate_policy": "reject"
+  },
+  "note": "duplicate keys are rejected instead of appended to the right"
+ },
+ "source_revision": {
+  "id": "src-baseline-v2",
+  "field": "value",
+  "key": "FIRST_SPLIT_KEY",
+  "to": "corrected-bytes",
+  "note": "localized byte correction of one op; only dependent judgments expire"
+ },
+ "conflict": {
+  "decision_point": "FIRST_TIE",
+  "candidate": "OTHER"
+ },
+ "perturbations": [
+  {
+   "id": "varlen-keys",
+   "desc": "变长键：单个键变长，仍须按字节空间分裂",
+   "patch": {
+    "index": 5,
+    "key": "k006-variable-long-key"
+   }
+  },
+  {
+   "id": "root-split",
+   "desc": "根分裂：改动一个早期键使根分裂时机移动",
+   "patch": {
+    "index": 0,
+    "key": "aaaa"
+   }
+  },
+  {
+   "id": "cascading-split",
+   "desc": "级联分裂：单个中间键变长加速内节点分裂",
+   "patch": {
+    "index": 60,
+    "key": "k061-variable-long-key"
+   }
+  },
+  {
+   "id": "duplicate-policy",
+   "desc": "重复键策略：参数改为 reject（单一参数来源）",
+   "param_patch": {
+    "duplicate_policy": "reject"
+   },
+   "rules": "rules-pert-dup"
+  },
+  {
+   "id": "delete-empty",
+   "desc": "删除后空页：换一个锚点叶页清空",
+   "patch": {
+    "op": "delete_leaf_keys",
+    "anchor": "k080"
+   }
+  },
+  {
+   "id": "torn-write",
+   "desc": "写页中断：崩溃落在另一条日志记录上",
+   "patch": {
+    "op": "crash",
+    "lsn": 60
+   }
+  },
+  {
+   "id": "replay-twice",
+   "desc": "恢复重放三次仍须幂等（只改重放次数）",
+   "patch": {
+    "op": "recover",
+    "times": 3
+   }
+  }
+ ],
+ "perturbation_rulings": {
+  "varlen-keys": "accepted",
+  "root-split": "accepted",
+  "cascading-split": "accepted",
+  "duplicate-policy": "accepted",
+  "delete-empty": "accepted",
+  "torn-write": "rejected",
+  "replay-twice": "rejected"
+ }
+}
