@@ -1,0 +1,100 @@
+{
+  "case_id": "page-split-archive-v1",
+  "title": "页裂档案：B-tree 页面布局、分裂传播与恢复检查",
+  "domain": "btree-page-split",
+  "page_size_bytes": 128,
+  "coordinate_basis": "byte offsets from page start; LSN is a monotonic 64-bit log sequence number",
+  "units": {
+    "page_size": "byte",
+    "free_space": "byte",
+    "key_len": "byte",
+    "offset": "byte",
+    "lsn": "log-sequence-number"
+  },
+  "narrative": [
+    {"stage": "import", "label": "导入固定页大小、键值操作和崩溃事件"},
+    {"stage": "audit-baseline", "label": "核对逻辑操作/前镜像/slot directory/free space/sibling/page id/LSN"},
+    {"stage": "boundaries", "label": "触发变长键、根分裂、级联分裂、重复键、删除空页、写页中断、两次重放"},
+    {"stage": "adjudication", "label": "在多候选上做分支裁定，检查失效范围，制造并发冲突"}
+  ],
+  "stages": [
+    {"stage": "s1-baseline",
+     "description": "基线：保存每个逻辑操作、页前镜像、slot directory、free space、sibling link、page id 分配与日志序号",
+     "operations": [
+       {"op": "put", "key": "alpha", "value": "v0001"},
+       {"op": "put", "key": "bravo", "value": "v0002"},
+       {"op": "put", "key": "charlie", "value": "v0003"},
+       {"op": "put", "key": "delta", "value": "v0004"},
+       {"op": "put", "key": "echo", "value": "v0005"},
+       {"op": "put", "key": "foxtrot-long-key-0006", "value": "v0006"},
+       {"op": "put", "key": "g", "value": "v0007"},
+       {"op": "put", "key": "hotel-long-key-0008-padding", "value": "v0008"},
+       {"op": "put", "key": "india", "value": "v0009"}
+     ]},
+    {"stage": "s2-variable-keys",
+     "description": "变长键：按字节空间而非键数决定分裂点",
+     "operations": [
+       {"op": "put", "key": "k-short", "value": "x"},
+       {"op": "put", "key": "k-this-is-a-much-longer-variable-length-key-AAAA", "value": "y"},
+       {"op": "put", "key": "k-this-is-a-much-longer-variable-length-key-BBBB", "value": "z"},
+       {"op": "put", "key": "k-mid-size-key-CCCC", "value": "w"},
+       {"op": "put", "key": "k-this-is-a-much-longer-variable-length-key-DDDD", "value": "q"},
+       {"op": "put", "key": "k2-tiny", "value": "t"}
+     ]},
+    {"stage": "s3-growth",
+     "description": "根分裂与级联分裂：持续增长直到内部页也分裂",
+     "operations_gen": {"kind": "seq", "prefix": "seq-",
+                        "start": 0, "count": 60,
+                        "value_bytes": 12, "key_bytes": 9}},
+    {"stage": "s4-duplicates",
+     "description": "重复键策略：replace/reject/multiset 三个候选解释",
+     "operations": [
+       {"op": "put", "key": "dup-key", "value": "first"},
+       {"op": "put", "key": "dup-key", "value": "second"},
+       {"op": "put", "key": "dup-key", "value": "third"}
+     ]},
+    {"stage": "s5-delete-empty",
+     "description": "删除后空页：keep 与 detach 两种合法处理",
+     "operations": [
+       {"op": "put", "key": "lone-1", "value": "a"},
+       {"op": "put", "key": "lone-2", "value": "b"},
+       {"op": "delete", "key": "lone-1"},
+       {"op": "delete", "key": "lone-2"}
+     ]},
+    {"stage": "s6-crash",
+     "description": "写页中断：分裂写页中途崩溃",
+     "operations": [
+       {"op": "put", "key": "crash-victim-key-0000000000",
+        "value": "payload-payload", "crash": {"at": "during_write"}}
+     ]},
+    {"stage": "s7-recover-twice",
+     "description": "恢复重放两次：第二次必须空跑且结果一致",
+     "operations": [
+       {"op": "recover"},
+       {"op": "recover"},
+       {"op": "put", "key": "post-recovery-key", "value": "ok"}
+     ]}
+  ],
+  "raw_units_note": "所有键值长度以 byte 计；导入层保留原始表示，规范化仅发生在派生层。",
+  "diagnostic_samples": [
+    {"name": "unconvertible-value", "key": "bad-length-key",
+     "value": {"not_bytes": "this-object-has-no-byte-encoding"},
+     "expect": "diagnostic retained at original position, import continues"}
+  ],
+  "parameter_revision": {
+    "from": {"split_bias": "balanced", "separator_policy": "copy"},
+    "to": {"split_bias": "left_heavy", "separator_policy": "promote"},
+    "note": "v2 只应使依赖 split/separator 的结论失效"
+  },
+  "source_change": {
+    "stage": "s2-variable-keys",
+    "target_op": 1,
+    "new_value": "y-CHANGED-LOCAL",
+    "note": "只影响局部依赖链，不全局替换旧结论"
+  },
+  "conflicting_decisions": [
+    {"candidate_group": "ambiguous-split", "decision": "accept"},
+    {"candidate_group": "ambiguous-split", "decision": "reject",
+     "note": "两个窗口在同一基版本上提交相反裁定，后者得到 409 与差异"}
+  ]
+}
