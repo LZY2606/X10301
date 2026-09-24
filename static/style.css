@@ -1,0 +1,40 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "SF Mono", Menlo, monospace; font-size: 13px;
+       background: #14171c; color: #d7dde5; }
+header { padding: 10px 16px; background: #1c2129; border-bottom: 1px solid #2c333d;
+         display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+h1 { font-size: 16px; margin: 0; }
+h1 small { color: #8b96a5; font-weight: normal; }
+h2 { font-size: 13px; margin: 0 0 8px; color: #9fb4c8; }
+button { background: #2a3442; color: #d7dde5; border: 1px solid #3d4a5c;
+         border-radius: 4px; padding: 4px 10px; cursor: pointer; font: inherit; }
+button:hover { background: #354154; }
+button.active { background: #3d6fa8; border-color: #5a8fc7; }
+button:disabled { opacity: .4; cursor: default; }
+main { display: flex; gap: 12px; padding: 12px; align-items: flex-start; }
+#left { flex: 3; min-width: 0; }
+#right { flex: 2; min-width: 320px; max-height: 92vh; overflow-y: auto; }
+.panel { background: #1c2129; border: 1px solid #2c333d; border-radius: 6px;
+         padding: 10px; margin-bottom: 12px; }
+#view-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+#view { overflow: auto; max-height: 70vh; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #2c333d; padding: 2px 6px; text-align: left; }
+.eid { color: #6f7d8f; font-size: 10px; }
+.adopted { color: #6fd38a; }
+.rejected { color: #e07a7a; }
+.stale { opacity: .45; text-decoration: line-through; }
+.pass { color: #6fd38a; } .fail { color: #e07a7a; }
+.cand { border: 1px solid #2c333d; border-radius: 4px; padding: 6px; margin: 4px 0; }
+.cand.adopted-now { border-color: #4c8a5f; }
+.byte-cell { width: 22px; height: 20px; text-align: center; font-size: 10px; }
+.r-header { background: #4a3b6b; } .r-record { background: #2c4a6b; }
+.r-slot { background: #6b5a2c; } .r-free { background: #232a33; }
+#conflict-modal { position: fixed; inset: 0; background: rgba(0,0,0,.6);
+                  display: flex; align-items: center; justify-content: center; }
+.modal-body { background: #1c2129; border: 1px solid #5a8fc7; border-radius: 6px;
+              padding: 16px; max-width: 720px; max-height: 80vh; overflow: auto; }
+.hist-item { cursor: pointer; padding: 1px 4px; border-radius: 3px; }
+.hist-item:hover { background: #2a3442; }
+svg text { font-family: inherit; }
+#case-title { color: #8b96a5; }

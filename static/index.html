@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>页裂档案：B-tree 页面布局、分裂传播与恢复检查</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>页裂档案 <small>B-tree 页面布局、分裂传播与恢复检查</small></h1>
+  <div id="toolbar">
+    <button id="btn-load">载入仓库示例</button>
+    <button id="btn-export">导出</button>
+    <button id="btn-import">导入</button>
+    <input type="file" id="file-import" accept=".json" hidden>
+    <button id="btn-reset">删除本地数据库</button>
+    <span id="case-title"></span>
+  </div>
+</header>
+<main>
+  <section id="left">
+    <div class="panel" id="chapters-panel">
+      <h2>案例章节</h2>
+      <div id="chapters"></div>
+    </div>
+    <div class="panel">
+      <h2>视图</h2>
+      <div id="view-tabs">
+        <button data-view="tree" class="active">树结构</button>
+        <button data-view="bytes">页内字节布局</button>
+        <button data-view="splits">分裂传播</button>
+        <button data-view="log">日志记录</button>
+        <button data-view="crash">崩溃点可达页面</button>
+      </div>
+      <div id="view"></div>
+    </div>
+  </section>
+  <section id="right">
+    <div class="panel" id="candidates-panel">
+      <h2>候选与裁定 <span id="head-version"></span></h2>
+      <div id="candidates"></div>
+    </div>
+    <div class="panel">
+      <h2>裁定历史</h2>
+      <div id="rulings"></div>
+    </div>
+    <div class="panel">
+      <h2>事件历史（点击回到任一旧事件）</h2>
+      <div id="history"></div>
+    </div>
+    <div class="panel">
+      <h2>诊断</h2>
+      <div id="diagnostics"></div>
+    </div>
+  </section>
+</main>
+<div id="conflict-modal" hidden>
+  <div class="modal-body">
+    <h2>版本冲突</h2>
+    <div id="conflict-detail"></div>
+    <button onclick="document.getElementById('conflict-modal').hidden=true">关闭</button>
+  </div>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
